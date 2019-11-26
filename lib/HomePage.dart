@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
               height:MediaQuery.of(context).size.height,
               child: Image(
                 fit: BoxFit.fill,
-                image: AssetImage('assets/rain3.jpg',),
+                image: AssetImage('assets/rain4.jpg',),
               ),
             ),
             Center(
@@ -84,7 +84,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  Container(),
+                  Container(
+                    child: WeatherWidget(SearchCity),
+                  ),
                 ],
               ),
             ),
@@ -105,10 +107,38 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder(
       future: getWeather(city == null? defaultCity : city),
       builder: (BuildContext context, AsyncSnapshot<Map> snapshot){
+        Map content = snapshot.data;
         if(!snapshot.hasData){
-          return Center(child: CircularProgressIndicator(),);
+          return Center(child: CircularProgressIndicator(
+            valueColor:AlwaysStoppedAnimation<Color>(Colors.white),),);
         }
-        return Container();
+        return Container(
+          margin: EdgeInsets.only(left: 130, top: 20),
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  '${content['main']['temp'].toString()} °C\n',
+                  style: TextStyle(
+                      fontFamily: 'NIX',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: MediaQuery.of(context).textScaleFactor*30),
+                ),
+                subtitle: ListTile(
+                  title: Text(
+                    '최고: ${content['main']['temp_max']}\n'
+                    '최저: ${content['main']['temp_min']}\n'
+                    '습도: ${content['main']['humidity']}\n',
+                    style: TextStyle(color: Colors.white,
+                        fontSize: MediaQuery.of(context).textScaleFactor*25,
+                        fontFamily: 'NIX'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
