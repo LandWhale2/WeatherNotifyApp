@@ -136,14 +136,13 @@ class _HomePageState extends State<HomePage> {
         if(content['name'] == null){
           return Container();
         }
-
-        print(content['name']);
+        print(content['weather'][0]['main']);
         return Container(
           margin: EdgeInsets.only(left: 130, top: 20),
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(bottom: 10),
+                margin: EdgeInsets.only(bottom: 10, right: 120),
                 child: Text(
                   content['name'].toString()??'',
                   style: TextStyle(
