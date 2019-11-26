@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rainnotifyapp/utils/Util.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,6 +16,20 @@ class _HomePageState extends State<HomePage> {
 
   String SearchCity;
 
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+
+  Search(){
+    var formstate = _formkey.currentState;
+    if(formstate.validate()){
+      formstate.save();
+      setState(() {});
+    }else{
+
+      Fluttertoast.showToast(msg: '내용을 입력해주세요 !',
+        backgroundColor: Colors.redAccent, textColor: Colors.white);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,40 +59,46 @@ class _HomePageState extends State<HomePage> {
                           border: Border.all(width: 0.1),
                           borderRadius: BorderRadius.all(Radius.circular(5))
                         ),
-                        child: TextFormField(
-                          onSaved: (input)=> SearchCity = input,
-                          style: TextStyle(
-                            fontSize: MediaQuery.of(context).textScaleFactor*20,
-                            color: Colors.white,
-                            fontFamily: 'RIDI',
-                          ),
-                          decoration: InputDecoration(
-                            hintText: '도시명을 입력해주세요. ',
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(
-                              color: Colors.white,
+                        child: Form(
+                          key: _formkey,
+                          child: TextFormField(
+                            onSaved: (input)=> SearchCity = input,
+                            style: TextStyle(
                               fontSize: MediaQuery.of(context).textScaleFactor*20,
-                                fontFamily: 'RIDI',
-                                fontWeight: FontWeight.w500),
-                            contentPadding: EdgeInsets.only(left: 20, top: 13)
+                              color: Colors.white,
+                              fontFamily: 'RIDI',
+                            ),
+                            decoration: InputDecoration(
+                              hintText: '도시명을 입력해주세요. ',
+                              border: InputBorder.none,
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: MediaQuery.of(context).textScaleFactor*20,
+                                  fontFamily: 'RIDI',
+                                  fontWeight: FontWeight.w500),
+                              contentPadding: EdgeInsets.only(left: 20, top: 13)
+                            ),
                           ),
                         ),
                       ),
-                      Container(
-                        height:MediaQuery.of(context).size.height/15,
-                        width: MediaQuery.of(context).size.width/5,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 0.1),
-                            borderRadius: BorderRadius.all(Radius.circular(5))
-                        ),
-                        child: Center(
-                          child: Text(
-                            '검색',
-                            style: TextStyle(
-                                fontSize : MediaQuery.of(context).textScaleFactor*25,
-                                fontFamily: 'RIDI',
-                                fontWeight: FontWeight.w500,
+                      InkWell(
+                        onTap: Search,
+                        child: Container(
+                          height:MediaQuery.of(context).size.height/15,
+                          width: MediaQuery.of(context).size.width/5,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(width: 0.1),
+                              borderRadius: BorderRadius.all(Radius.circular(5))
+                          ),
+                          child: Center(
+                            child: Text(
+                              '검색',
+                              style: TextStyle(
+                                  fontSize : MediaQuery.of(context).textScaleFactor*25,
+                                  fontFamily: 'RIDI',
+                                  fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -112,13 +133,30 @@ class _HomePageState extends State<HomePage> {
           return Center(child: CircularProgressIndicator(
             valueColor:AlwaysStoppedAnimation<Color>(Colors.white),),);
         }
+        if(content['name'] == null){
+          return Container();
+        }
+
+        print(content['name']);
         return Container(
           margin: EdgeInsets.only(left: 130, top: 20),
           child: Column(
             children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  content['name'].toString()??'',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: MediaQuery.of(context).textScaleFactor*30,
+                    fontFamily: 'RIDI',
+                    fontWeight: FontWeight.w800
+                  ),
+                ),
+              ),
               ListTile(
                 title: Text(
-                  '${content['main']['temp'].toString()} °C\n',
+                  '${content['main']['temp'].toString()} °C\n'??'',
                   style: TextStyle(
                       fontFamily: 'NIX',
                       color: Colors.white,
