@@ -104,6 +104,12 @@ class _HomePageState extends State<HomePage> {
   Widget WeatherWidget(String city){
     return FutureBuilder(
       future: getWeather(city == null? defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot){
+        if(!snapshot.hasData){
+          return Center(child: CircularProgressIndicator(),);
+        }
+        return Container();
+      },
     );
   }
 }
